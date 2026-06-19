@@ -60,12 +60,16 @@ accionable, respondiendo directamente al reto analítico propuesto por el caso d
 
 | Métrica | Resultado | Estatus |
 | :--- | :---: | :---: |
-| **Registros procesados** | 304,799 | ✅ |
-| **Usuarios únicos analizados** | ~50,000+ | ✅ |
-| **ROC-AUC — Random Forest** | **0.7338** | ✅ Validado |
-| **Umbral óptimo de descuento** | **18.71%** | ✅ Calculado |
-| **Segmentos de usuario** | 4 (K-Means) | ✅ |
-| **Data Leakage detectado y corregido** | `recencia` excluida | ✅ |
+| **Registros brutos** | 304,799 | ✅ |
+| **Registros post-ETL** | 221,004 | ✅ |
+| **Usuarios únicos analizados** | 189,384 | ✅ |
+| **Cardinalidad `tarifa` (cruda → limpia)** | 415 → 5 | ✅ Normalizado |
+| **Cardinalidad `tipo_venta` (cruda → limpia)** | 346 → 2 | ✅ Normalizado |
+| **Features del modelo** | 12 | ✅ |
+| **ROC-AUC — Random Forest** | **0.7537** | ✅ Validado |
+| **Umbral óptimo de descuento** | **11.92%** | ✅ Calculado |
+| **Segmentos de usuario** | 4 (K-Means, 6 features) | ✅ |
+| **Data Leakage detectado y excluido** | `recencia` excluida | ✅ |
 | **Cobertura temporal** | Ene 2024 → Dic 2025 | ✅ |
 
 ---
@@ -97,13 +101,13 @@ urban-parks-intelligence/
 
 | # | Tarjeta | Técnica | Output clave |
 |:---:|:--------|:--------|:-------------|
-| 1 | **ETL — Ingesta Robusta** | `pd.concat`, parseo mixto, detección de entorno | `df` con 304k registros limpios |
-| 2 | **Ingeniería de Características** | Variables RFM, demografía, franja horaria | `df_user` con métricas por usuario |
-| 3 | **Segmentación K-Means** | StandardScaler + método del codo | 4 segmentos etiquetados semánticamente |
-| 4 | **Modelado Supervisado + Leakage** | Correlación, exclusión de `recencia` | Features saneadas, 2 modelos entrenados |
-| 5 | **Evaluación de Modelos** | ROC-AUC, curva ROC, importancia de features | RF wins: AUC=0.7338 |
-| 6 | **Smart Pricing** | Elasticidad precio-frecuencia | Umbral óptimo de descuento: 18.71% |
-| 7 | **Estacionalidad y Exportación** | Serie temporal 2024 vs 2025 | CSV exportado + hallazgos de capacidad |
+| 1 | **ETL — Ingesta Robusta** | `pd.concat`, parseo mixto, normalización `unicodedata` | `df` con 221,004 registros limpios |
+| 2 | **Ingeniería de Características** | Variables RFM, demografía, franja horaria, comportamiento de fin de semana | `df_user` con 12 features por usuario |
+| 3 | **Segmentación K-Means** | StandardScaler + método del codo (6 features) | 4 segmentos etiquetados semánticamente |
+| 4 | **Modelado Supervisado + Leakage** | Correlación, exclusión de `recencia`, one-hot real | Features saneadas, 2 modelos entrenados |
+| 5 | **Evaluación de Modelos** | ROC-AUC, curva ROC, importancia de features | RF wins: AUC=0.7537 |
+| 6 | **Smart Pricing** | Elasticidad precio-frecuencia | Umbral óptimo de descuento: 11.92% |
+| 7 | **Estacionalidad y Exportación** | Serie temporal 2024 vs 2025 | `df_resultados_analisis_parques.csv` + hallazgos de capacidad |
 
 ---
 
