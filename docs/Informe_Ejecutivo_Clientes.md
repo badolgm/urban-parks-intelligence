@@ -40,9 +40,13 @@ y diversidad temporal:
 El clasificador **Random Forest** con 12 features entrenadas alcanza:
 
 - **ROC-AUC: 0.7537** — verificado reproduciblemente contra los datos originales.
-  Impulsado principalmente por la incorporación de `pct_fin_semana`, `n_meses_activo`,
-  y la codificación one-hot de género, franja horaria y categoría de edad como features
-  adicionales del modelo.
+  Impulsado casi en su totalidad por `monetario_neto` y `edad` (77% de la importancia
+  combinada). Las features adicionales incorporadas en esta versión (`pct_fin_semana`,
+  `n_meses_activo`, género, franja horaria, categoría de edad one-hot) aportan señal
+  marginal: combinadas suman menos del 10% de la importancia total, y género por sí
+  solo apenas 1.5%. Se mantienen en el modelo por rigor metodológico (evitan descartar
+  variables sin medir su aporte), pero no deben presentarse como motor principal del
+  resultado.
 
 **Drivers principales del churn (importancia Random Forest):**
 
@@ -85,3 +89,21 @@ tempranas reales requeriría datos con mayor densidad temporal por usuario.
 
 ---
 *Métricas verificadas reproduciblemente contra los archivos CSV originales.*
+
+---
+
+## Anexo: Bitácora de Auditoría (v2 → v3)
+
+**Bug detectado y corregido — etiquetado de segmentos (Tarjeta 3 / K-Means).**
+El criterio de ordenamiento `sort_values(['frecuencia','n_meses_activo'])` produce un
+empate exacto de 3 vías (3 de los 4 clusters comparten `frecuencia=1.0` y
+`n_meses_activo=1.0` en su mediana), por lo que el desempate caía al orden de aparición
+del índice, no a ningún criterio de negocio. Esto invertía las etiquetas: el cluster con
+recencia mediana de 358 días (segundo peor) se etiquetaba "Asistentes Ocasionales
+Activos", y el de 177 días (segundo mejor) se etiquetaba "Visitantes Inactivos /
+Perdidos". **Corrección aplicada:** se agregó `recencia` ascendente como criterio
+terciario de desempate. Los números de esta versión del informe (distribución de
+segmentos, tabla de la sección 2) ya reflejan el etiquetado corregido. Verificado por
+re-ejecución completa del notebook contra los CSV originales — sin errores, métricas
+de AUC, smart pricing y estacionalidad sin cambios respecto a v2 (el bug solo afectaba
+el *nombre* del segmento, no los clusters ni el modelo predictivo en sí).
