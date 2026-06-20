@@ -1,2 +1,6 @@
 .env
 data/
+
+# Documento de auditoría técnica — uso personal/académico, no para el repo público
+docs/AUDITORIA_TECNICA.md
+AUDITORIA_TECNICA.md
