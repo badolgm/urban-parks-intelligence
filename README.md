@@ -72,6 +72,11 @@ accionable, respondiendo directamente al reto analítico propuesto por el caso d
 | **Data Leakage detectado y excluido** | `recencia` excluida | ✅ |
 | **Cobertura temporal** | Ene 2024 → Dic 2025 | ✅ |
 
+<div align="center">
+<br>
+<img src="assets/grafico_kpis.png" width="850" alt="Indicadores clave del pipeline: retención de datos ETL y normalización de cardinalidad"/>
+</div>
+
 ---
 
 ## 📂 Estructura del Repositorio
@@ -88,7 +93,8 @@ urban-parks-intelligence/
 │
 ├── 🖼️ assets/
 │   ├── logo_alcaldia.png
-│   └── logo_rutan.png
+│   ├── logo_rutan.png
+│   └── grafico_kpis.png
 │
 ├── 📜 LICENSE
 ├── 🔒 .gitignore
